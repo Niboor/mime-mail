@@ -399,6 +399,19 @@ simpleMail' :: Address -- ^ to
 simpleMail' to from subject body = addPart [plainPart body]
                                  $ mailFromToSubject from to subject
 
+-- f -> To -> From -> Subject -> Body -> Attachments -> IO Mail
+mailSingleBody :: (LT.Text -> Part) -> String -> String -> String -> String -> [(Text, FilePath)] -> IO Mail
+mailSingleBody f to from subject body attachments =
+    addAttachments attachments .
+    addPart [f $ LT.pack body] $
+    mailFromToSubject (Address Nothing $ T.pack from) (Address Nothing $ T.pack to) $ T.pack subject
+
+mailHTML :: String -> String -> String -> String -> [(Text, FilePath)] -> IO Mail
+mailHTML = mailSingleBody htmlPart
+
+mailPlain :: String -> String -> String -> String -> [(Text, FilePath)] -> IO Mail
+mailPlain = mailSingleBody plainPart
+
 -- | A simple interface for generating an email with HTML and plain-text
 -- alternatives and some 'ByteString' attachments.
 --
