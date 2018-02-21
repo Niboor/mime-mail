@@ -35,6 +35,8 @@ module Network.Mail.Mime
     , plainPart
     , randomString
     , quotedPrintable
+    , mailHTML
+    , mailPlain
     ) where
 
 import qualified Data.ByteString.Lazy as L
